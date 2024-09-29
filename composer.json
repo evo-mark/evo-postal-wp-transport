@@ -1,0 +1,21 @@
+{
+    "name": "evo-mark/evo-postal-wp-transport",
+    "description": "Base Postal integration for Wordpress",
+    "license": "GPL-3.0-or-later",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Craig Riley",
+            "email": "c.riley@evomark.co.uk",
+            "homepage": "https://evomark.co.uk"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "EvoMark\\EvoPostalWpTransport\\": "src/"
+        }
+    },
+    "require": {
+        "postal/postal": "^2.0.0"
+    }
+}
