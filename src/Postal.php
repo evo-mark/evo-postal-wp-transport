@@ -136,4 +136,24 @@ class Postal
         $quoted = preg_quote($prefix, '/');
         return $prefix . preg_replace('/^(?:' . $quoted . ')+/u', '', $value);
     }
+
+    // Appending attachments would require multiple boundaries and a multipart/mixed structure
+    // On hold
+    public function injectAttachments(string $content): string
+    {
+        $finalBoundary = "--" . $this->attrs->boundary . "--";
+
+        $attachments = "";
+
+        /** @var Attachment $attachment */
+        foreach ($this->attrs->attachments as $attachment) {
+            $attachments .= "--" . $this->attrs->boundary . "\r\n";
+            $attachments .= sprintf("Content-Type: %s; name=\"%s\"\r\n", $attachment->contentType, $attachment->filename);
+            $attachments .= "Content-Transfer-Encoding: base64\r\n";
+            $attachments .= sprintf("Content-Disposition: attachment; filename=\"%s\"\r\n\r\n", $attachment->filename);
+            $attachments .= base64_encode($attachment->data) . "\r\n";
+        }
+
+        return $content . "\r\n" . $attachments . $finalBoundary;
+    }
 }
