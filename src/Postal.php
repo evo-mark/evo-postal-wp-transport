@@ -13,17 +13,20 @@ class Postal
     protected Attributes $attrs;
     protected Client $client;
     protected $callback = null;
+    protected $attachmentsCallback = null;
 
     /**
      *
      */
-    public function __construct($settings, $attrs, $callback = null)
+    public function __construct($settings, $attrs, $callback = null, $attachmentsCallback = null)
     {
         $this->settings = $settings;
         $this->attrs = new Attributes($attrs, $settings['from_address'] ?? "", $settings['from_name'] ?? "");
 
         $this->client = new Client($this->start($settings['host'], "https://"), $settings['api_key']);
         $this->callback = $callback;
+        $this->attachmentsCallback = $attachmentsCallback;
+        
     }
 
     /**
@@ -66,8 +69,13 @@ class Postal
             $message->header($headerName, $headerContent);
         }
 
+        if (!empty($this->attachmentsCallback) && is_callable($this->attachmentsCallback)) {
+            $attachments = call_user_func($this->attachmentsCallback, $this->attrs->attachments, $message, $this->attrs);
+        } else {
+            $attachments = $this->attrs->attachments;
+        }
         /** @var Attachment $attachment */
-        foreach ($this->attrs->attachments as $attachment) {
+        foreach ($attachments as $attachment) {
             $message->attach($attachment->filename, $attachment->contentType, $attachment->data);
         }
 
