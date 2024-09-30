@@ -7,6 +7,8 @@ class Attributes
 
     public array $to = [];
     public string $from = "";
+    public string $fromName = "";
+    public string $fromAddress = "";
     public array $cc = [];
     public array $bcc = [];
     public string $replyTo = "";
@@ -18,7 +20,7 @@ class Attributes
 
     public array $attachments = [];
     public string $boundary = "";
-    public string $contentType = "";
+    public string $contentType = "text/html";
     public string $charset = "";
 
     /**
@@ -49,9 +51,39 @@ class Attributes
             }
         }
 
-        if (empty($this->from) && !empty($defaultFromAddress)) {
-            $this->from = !empty($defaultFromName) ? $defaultFromName . " <" . $defaultFromAddress . ">" : $defaultFromAddress;
+
+        $this->fromName = $this->resolveFromName($defaultFromName);
+        $this->fromAddress = $this->resolveFromAddress($defaultFromAddress);
+
+        $this->from = !empty($this->fromName) ? $this->fromName . " <" . $this->fromAddress . ">" : $this->fromAddress;
+        $this->contentType = apply_filters('wp_mail_content_type', $this->contentType);
+        $this->charset = apply_filters('wp_mail_charset', $this->charset);
+    }
+
+    private function resolveFromName($name)
+    {
+        if (!empty($this->from) && stripos($this->from, "<") !== false) {
+            $maybeNameParts = explode("<", $this->from, 2);
+            $maybeName = trim($maybeNameParts[0] ?? "");
+            if (!empty($maybeName)) {
+                $name = $maybeName;
+            }
         }
+
+        return apply_filters('wp_mail_from_name', $name);
+    }
+
+    private function resolveFromAddress($email)
+    {
+        if (!empty($this->from) && stripos($this->from, "<") !== false) {
+            $maybeEmailParts = explode("<", $this->from, 2);
+            $maybeEmail = trim($maybeEmailParts[1] ?? "", " \n\r\t\v\0>");
+            if (!empty($maybeEmail)) {
+                $email = $maybeEmail;
+            }
+        }
+
+        return apply_filters('wp_mail_from', $email);
     }
 
     public function isMultipart(): bool
