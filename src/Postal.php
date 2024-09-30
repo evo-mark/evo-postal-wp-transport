@@ -12,16 +12,18 @@ class Postal
     protected array $settings;
     protected Attributes $attrs;
     protected Client $client;
+    protected $callback = null;
 
     /**
      *
      */
-    public function __construct($settings, $attrs)
+    public function __construct($settings, $attrs, $callback = null)
     {
         $this->settings = $settings;
         $this->attrs = new Attributes($attrs, $settings['from_address'] ?? "", $settings['from_name'] ?? "");
 
         $this->client = new Client($this->start($settings['host'], "https://"), $settings['api_key']);
+        $this->callback = $callback;
     }
 
     /**
@@ -69,6 +71,9 @@ class Postal
             $message->attach($attachment->filename, $attachment->contentType, $attachment->data);
         }
 
+        if (!empty($this->callback) && is_callable($this->callback)) {
+            $message = call_user_func($this->callback, $message, 'standard', $this->attrs);
+        }
         $result = $this->client->send->message($message);
         return $result;
     }
@@ -125,6 +130,9 @@ class Postal
             $message->rcptTo($recipient);
             $message->data($data);
 
+            if (!empty($this->callback) && is_callable($this->callback)) {
+                $message = call_user_func($this->callback, $message, 'raw', $this->attrs);
+            }
             $this->client->send->raw($message);
         }
 
