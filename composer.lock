@@ -333,16 +333,16 @@
         },
         {
             "name": "postal/postal",
-            "version": "v2.0.1",
+            "version": "v2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/postalserver/postal-php.git",
-                "reference": "e361d11aadb724a482092784ebfe00461c492b5d"
+                "reference": "bb664406d35f763d9a7420fb7eeac67f34279b13"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/postalserver/postal-php/zipball/e361d11aadb724a482092784ebfe00461c492b5d",
-                "reference": "e361d11aadb724a482092784ebfe00461c492b5d",
+                "url": "https://api.github.com/repos/postalserver/postal-php/zipball/bb664406d35f763d9a7420fb7eeac67f34279b13",
+                "reference": "bb664406d35f763d9a7420fb7eeac67f34279b13",
                 "shasum": ""
             },
             "require": {
@@ -386,9 +386,9 @@
             ],
             "support": {
                 "issues": "https://github.com/postalserver/postal-php/issues",
-                "source": "https://github.com/postalserver/postal-php/tree/v2.0.1"
+                "source": "https://github.com/postalserver/postal-php/tree/v2.0.2"
             },
-            "time": "2023-12-19T09:49:41+00:00"
+            "time": "2024-10-01T13:17:12+00:00"
         },
         {
             "name": "psr/http-client",
