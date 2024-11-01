@@ -151,9 +151,10 @@ class Attributes
             if (empty($attachment) || !file_exists($attachment)) continue;
 
             $filename = is_string($filename) ? $filename : basename($attachment);
+            $originalPath = is_string($attachment) ? $attachment : null;
             $contentType = mime_content_type($attachment) ?? "text/plain";
             $data = file_get_contents($attachment);
-            $processed[] = new Attachment($filename, $contentType, $data);
+            $processed[] = new Attachment($filename, $contentType, $data, $originalPath);
         }
 
         return $processed;
